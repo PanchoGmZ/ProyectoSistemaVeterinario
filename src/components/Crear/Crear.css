@@ -1,0 +1,192 @@
+.crear-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .volver-button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+  }
+  
+  .volver-button:hover {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+  }
+  
+  .veterinario-form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .veterinario-form h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-weight: 500;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .form-group input:focus {
+    border-color: #4299e1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+  }
+  
+  .cancel-button {
+    background-color: #f56565;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .cancel-button:hover {
+    background-color: #e53e3e;
+  }
+  
+  .submit-button {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-color: #38a169;
+  }
+  
+  @media (max-width: 768px) {
+    .crear-container {
+      padding: 15px;
+    }
+    
+    .veterinario-form {
+      padding: 20px;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .cancel-button,
+    .submit-button {
+      width: 100%;
+    }
+  }
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #eadddd;
+    min-height: 120px; /* Altura mínima aumentada */
+    resize: vertical; /* Permite redimensionar verticalmente */
+    line-height: 1.5;
+    transition: all 0.3s ease;
+}
+
+/* Estilo cuando el textarea está enfocado */
+.form-group textarea:focus {
+    border-color: #4299e1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+}
+
+/* Estilo para el contenedor del textarea */
+.form-group {
+    margin-bottom: 25px; /* Aumenté el margen inferior */
+}
+
+/* Estilo para la etiqueta del textarea */
+.form-group label {
+    display: block;
+    margin-bottom: 10px; /* Aumenté el margen inferior */
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+/* Estilos responsivos para móviles */
+@media (max-width: 768px) {
+    .form-group textarea {
+        min-height: 150px; /* Más alto en móviles para mejor usabilidad */
+    }
+}
+.receta-form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.large-textarea {
+  min-height: 120px;
+  resize: vertical;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: all 0.3s;
+}
+
+.large-textarea:focus {
+  border-color: #4299e1;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+}
+
+@media (max-width: 768px) {
+  .receta-form {
+    padding: 20px;
+  }
+  
+  .large-textarea {
+    min-height: 150px;
+  }
+}
