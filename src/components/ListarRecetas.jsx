@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
 
 export function ListarRecetas() {
     const [recetas, setRecetas] = useState([]);
@@ -62,6 +63,48 @@ export function ListarRecetas() {
                 alert(error.message || 'No se pudo eliminar la receta');
             }
         }
+    };
+
+    const generarPDF = (receta) => {
+        // Obtener la información necesaria de la receta
+        const idReceta = receta.idReceta || receta.IdReceta;
+        const idConsulta = receta.consulta?.idConsulta || receta.Consulta?.IdConsulta || 'N/A';
+        const medicamento = receta.medicamento?.nombre || receta.Medicamento?.Nombre || 'N/A';
+        const dosis = receta.dosis || receta.Dosis;
+        const indicaciones = receta.indicaciones || receta.Indicaciones || '-';
+        const fechaPrescripcion = formatFecha(receta.fechaPrescripcion || receta.FechaPrescripcion);
+        
+        // Crear un nuevo documento PDF
+        const doc = new jsPDF();
+        
+        // Configurar el título y la información general
+        doc.setFontSize(18);
+        doc.text("Receta Médica", 105, 20, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.text(`Fecha: ${fechaPrescripcion}`, 20, 40);
+        doc.text(`ID Receta: ${idReceta}`, 20, 50);
+        doc.text(`Consulta #: ${idConsulta}`, 20, 60);
+        
+        // Información del medicamento y dosis
+        doc.setFontSize(14);
+        doc.text("Información de la prescripción:", 20, 80);
+        
+        doc.setFontSize(12);
+        doc.text(`Medicamento: ${medicamento}`, 30, 90);
+        doc.text(`Dosis: ${dosis}`, 30, 100);
+        
+        // Indicaciones
+        doc.setFontSize(14);
+        doc.text("Indicaciones:", 20, 120);
+        
+        doc.setFontSize(12);
+        // Si las indicaciones son largas, dividirlas en varias líneas
+        const splitIndicaciones = doc.splitTextToSize(indicaciones, 170);
+        doc.text(splitIndicaciones, 30, 130);
+        
+        // Guardar el documento
+        doc.save(`Receta_${idReceta}_${fechaPrescripcion.replace(/\//g, '-')}.pdf`);
     };
 
     const formatFecha = (fecha) => {
@@ -132,6 +175,12 @@ export function ListarRecetas() {
                                     className="action-button delete-button"
                                 >
                                     🗑️ Eliminar
+                                </button>
+                                <button 
+                                    onClick={() => generarPDF(receta)}
+                                    className="action-button pdf-button"
+                                >
+                                    📄 PDF
                                 </button>
                             </td>
                         </tr>

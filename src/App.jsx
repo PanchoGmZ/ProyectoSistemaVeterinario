@@ -26,6 +26,8 @@ import ModificarHistorialMedico from './components/Modificar/ModificarHistorialM
 import ModificarReceta from './components/Modificar/ModificarReceta';
 import ModificarConsulta from './components/Modificar/ModificarConsultas';
 import ModificarVeterinarios from './components/Modificar/ModificarVeterinarios';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function App() {
   return (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function ModificarMascota() {
+export default function ModificarMascotas() {
     const [mascotas, setMascotas] = useState([]); // Lista de mascotas
     const [mascotaSeleccionada, setMascotaSeleccionada] = useState(null); // Mascota que se edita
     const [cargando, setCargando] = useState(true);
