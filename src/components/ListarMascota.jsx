@@ -15,7 +15,20 @@ export function ListarMascotas() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setMascotas(data);
+        
+        // Obtener imágenes del localStorage
+        const mascotasConImagen = JSON.parse(localStorage.getItem('mascotasImagenes')) || {};
+        
+        // Combinar datos del backend con imágenes locales
+        const mascotasCompletas = data.map(mascota => {
+          const mascotaId = mascota.idMascota || mascota.IdMascota;
+          return {
+            ...mascota,
+            imagenLocal: mascotasConImagen[mascotaId] || null
+          };
+        });
+
+        setMascotas(mascotasCompletas);
       } catch (error) {
         console.error('Error fetching pets:', error);
         setError(error.message);
@@ -55,6 +68,13 @@ export function ListarMascotas() {
           throw new Error(responseData.message || 'Error al eliminar mascota');
         }
 
+        // Eliminar también la imagen local si existe
+        const mascotasConImagen = JSON.parse(localStorage.getItem('mascotasImagenes')) || {};
+        if (mascotasConImagen[idMascota]) {
+          delete mascotasConImagen[idMascota];
+          localStorage.setItem('mascotasImagenes', JSON.stringify(mascotasConImagen));
+        }
+
         setMascotas(prev => prev.filter(m => (m.idMascota || m.IdMascota) !== idMascota));
         
         alert(responseData.mensaje || 'Mascota eliminada correctamente');
@@ -80,6 +100,7 @@ export function ListarMascotas() {
         <table>
           <thead>
             <tr>
+              <th>Imagen</th>
               <th>ID</th>
               <th>Nombre</th>
               <th>Especie</th>
@@ -95,6 +116,17 @@ export function ListarMascotas() {
               const mascotaId = mascota.idMascota || mascota.IdMascota;
               return (
                 <tr key={mascotaId}>
+                  <td>
+                    {mascota.imagenLocal ? (
+                      <img 
+                        src={mascota.imagenLocal} 
+                        alt={mascota.nombre || mascota.Nombre}
+                        className="pet-image"
+                      />
+                    ) : (
+                      <div className="no-image">Sin imagen</div>
+                    )}
+                  </td>
                   <td>{mascotaId}</td>
                   <td>{mascota.nombre || mascota.Nombre}</td>
                   <td>{mascota.especie || mascota.Especie}</td>

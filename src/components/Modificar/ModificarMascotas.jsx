@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import './ModificarMascotasDis.css' // Importa el archivo CSS
+import React, { useState, useEffect } from "react";
 
+// ModificarMascotas Component
 export default function ModificarMascotas() {
     const [mascotas, setMascotas] = useState([]); // Lista de mascotas
     const [mascotaSeleccionada, setMascotaSeleccionada] = useState(null); // Mascota que se edita
@@ -151,3 +151,72 @@ export default function ModificarMascotas() {
         </div>
     );
 }
+
+// Estilos CSS (se colocan al final del archivo JS)
+const style = `
+    .container {
+        font-family: 'Arial', sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+        text-align: center;
+        color: #2f4f4f; /* Verde oscuro */
+        margin-bottom: 20px;
+    }
+
+    .label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+        color: #2f4f4f; /* Verde oscuro */
+    }
+
+    .select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .form {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .input {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .button {
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: #218838;
+    }
+`;
+
+// Inyectamos los estilos en el documento
+const styleTag = document.createElement("style");
+styleTag.innerHTML = style;
+document.head.appendChild(styleTag);

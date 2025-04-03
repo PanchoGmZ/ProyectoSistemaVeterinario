@@ -16,7 +16,11 @@ const CrearMascota = () => {
   const [propietarios, setPropietarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [localImage, setLocalImage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Cargar propietarios al montar el componente
   useEffect(() => {
     const fetchPropietarios = async () => {
       try {
@@ -33,6 +37,7 @@ const CrearMascota = () => {
     fetchPropietarios();
   }, []);
 
+  // Limpiar campos del formulario
   const limpiarCampos = () => {
     setMascota({
       nombre: '',
@@ -43,10 +48,11 @@ const CrearMascota = () => {
       idPropietario: '',
       propietario: null
     });
+    setImagePreview(null);
+    setLocalImage(null);
   };
 
-  const handleVolver = () => navigate('/');
-
+  // Manejar cambio en campos de texto/número/select
   const handleChange = (e) => {
     const { name, value } = e.target;
     setMascota(prev => ({
@@ -55,6 +61,7 @@ const CrearMascota = () => {
     }));
   };
 
+  // Manejar cambio en selección de propietario
   const handlePropietarioChange = (e) => {
     const selectedId = Number(e.target.value);
     const selectedPropietario = propietarios.find(p => 
@@ -74,15 +81,62 @@ const CrearMascota = () => {
     }));
   };
 
+  // Manejar selección de imagen
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      alert('Por favor selecciona una imagen válida (JPEG, PNG, GIF o WEBP)');
+      return;
+    }
+
+    // Validar tamaño (máximo 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert('La imagen es demasiado grande. El tamaño máximo permitido es 2MB.');
+      return;
+    }
+
+    // Guardar archivo para posible envío
+    setLocalImage(file);
+
+    // Crear previsualización
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setImagePreview(event.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Guardar imagen en localStorage
+  const guardarImagenLocalmente = (mascotaId, imageFile) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const mascotasConImagen = JSON.parse(localStorage.getItem('mascotasImagenes')) || {};
+        mascotasConImagen[mascotaId] = event.target.result;
+        localStorage.setItem('mascotasImagenes', JSON.stringify(mascotasConImagen));
+        resolve();
+      };
+      reader.readAsDataURL(imageFile);
+    });
+  };
+
+  // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     if (!mascota.idPropietario) {
       alert('Debe seleccionar un propietario');
+      setIsSubmitting(false);
       return;
     }
 
     try {
+      // 1. Crear la mascota en el backend
       const mascotaData = {
         nombre: mascota.nombre,
         especie: mascota.especie,
@@ -92,8 +146,6 @@ const CrearMascota = () => {
         idPropietario: mascota.idPropietario,
         propietario: mascota.propietario
       };
-
-      console.log("Enviando datos:", mascotaData);
 
       const response = await fetch('https://localhost:7167/api/Mascota', {
         method: 'POST',
@@ -105,17 +157,25 @@ const CrearMascota = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Error del servidor:", errorData);
         throw new Error(errorData.title || errorData.message || 'Error al crear mascota');
       }
 
       const result = await response.json();
+      const mascotaId = result.id;
+
+      // 2. Guardar imagen localmente si existe
+      if (localImage) {
+        await guardarImagenLocalmente(mascotaId, localImage);
+      }
+
       alert(result.mensaje || 'Mascota creada exitosamente');
-      limpiarCampos(); // Limpia los campos después de éxito
-      // Opcional: navigate('/mascotas'); si prefieres redirigir
+      limpiarCampos();
+      navigate('/mascotas');
     } catch (error) {
-      console.error('Error completo:', error);
-      alert(`Error al crear mascota: ${error.message}`);
+      console.error('Error al crear mascota:', error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -124,7 +184,7 @@ const CrearMascota = () => {
 
   return (
     <div className="crear-container">
-      <button onClick={handleVolver} className="volver-button">
+      <button onClick={() => navigate('/')} className="volver-button">
         &larr; Volver a Mascotas
       </button>
       
@@ -142,6 +202,8 @@ const CrearMascota = () => {
               required
               minLength="2"
               maxLength="50"
+              pattern="[A-Za-zÁ-ú\s]+"
+              title="Solo letras y espacios"
             />
           </label>
         </div>
@@ -230,9 +292,37 @@ const CrearMascota = () => {
           </label>
         </div>
         
+        <div className="form-group">
+          <label>
+            Imagen de la mascota (solo local):
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              disabled={isSubmitting}
+            />
+          </label>
+          {imagePreview && (
+            <div className="image-preview">
+              <img 
+                src={imagePreview} 
+                alt="Preview" 
+                style={{ maxWidth: '200px', maxHeight: '200px' }}
+              />
+            </div>
+          )}
+          <small className="image-note">
+            La imagen se guardará solo en este navegador
+          </small>
+        </div>
+        
         <div className="form-actions">
-          <button type="submit" className="submit-button">
-            Registrar Mascota
+          <button 
+            type="submit" 
+            className="submit-button"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Guardando...' : 'Registrar Mascota'}
           </button>
         </div>
       </form>
