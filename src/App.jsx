@@ -168,7 +168,7 @@ function ProtectedLayout() {
             <Routes>
               <Route path="/" element={<ListarMascotas />} />
               <Route path="/crear-mascota" element={<CrearMascota />} />
-              <Route path="/editar-mascotas/:id" element={<ModificarMascotas/>} /> 
+              <Route path="/editar-mascota/:id" element={<ModificarMascotas/>} /> 
             </Routes>
           )}
           {activeTab === 'propietarios' && (
